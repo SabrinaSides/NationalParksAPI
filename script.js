@@ -58,6 +58,8 @@ function watchForm() {
   $('form').submit(event => {
     event.preventDefault();
     const stateCode = $('#js-state-code').val();
+    console.log('this is the state code ' + stateCode
+    );
     const maxResults = $('#js-max-results').val();
     getNationalParks(stateCode, maxResults);
   });
