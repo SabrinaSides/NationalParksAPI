@@ -9,6 +9,7 @@ function formatQueryParams(params) {
   const queryItems = Object.keys(params)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
   let queryJoined = queryItems.join('&');
+  console.log('This is the gueryJoined ' + queryJoined)
   return queryJoined;
 }
 
@@ -16,18 +17,14 @@ function displayResults(responseJson) {
   // if there are previous results, remove them
   console.log(responseJson);
   $('#results-list').empty();
+  $('#search-results').empty();
+  const stateCode = $('#js-state-code').val();
+  $('#search-results').append('Search Results for ' + stateCode)
   // iterate through the items array
   for (let i = 0; i < responseJson.data.length; i++){
       $('#results-list').append(
       `<li><h3>${responseJson.data[i].fullName}</h3>
-      <img src='${responseJson.data[i].images[0].url}' alt='Picture of national park' width='100%'>
       <p>${responseJson.data[i].description}</p>
-      <p>Park Address:<br> ${responseJson.data[i].addresses[0].line1}<br>
-      ${responseJson.data[i].addresses[0].line2}<br>
-      ${responseJson.data[i].addresses[0].city},
-      ${responseJson.data[i].addresses[0].stateCode}<br>
-      ${responseJson.data[i].addresses[0].postalCode}<br>
-      (Mailing address may vary. See nps.gov for more info)<p>
       <a href="${responseJson.data[i].url}">Park Webpage</a>
       </li>`
     )};
@@ -38,7 +35,7 @@ function displayResults(responseJson) {
 function getNationalParks(query, maxResults) {
   const params = {
     api_key: apiKey,
-    q: query,
+    stateCode: query,
     limit: maxResults
   };
   const queryString = formatQueryParams(params)
@@ -51,18 +48,18 @@ function getNationalParks(query, maxResults) {
       if (response.ok) {
         return response.json();
       }
-      throw new Error('Something went wrong. Please make sure to enter a valid user handle.');
+      throw new Error(response.statusText);
     })
     .then(responseJson => displayResults(responseJson))
-    .catch(error => alert('Something went wrong. Please make sure to enter a valid state.'));
+    .catch(error => alert(error));
 }
 
 function watchForm() {
   $('form').submit(event => {
     event.preventDefault();
-    const searchTerm = $('#js-search-term').val();
+    const stateCode = $('#js-state-code').val();
     const maxResults = $('#js-max-results').val();
-    getNationalParks(searchTerm, maxResults);
+    getNationalParks(stateCode, maxResults);
   });
 }
 
