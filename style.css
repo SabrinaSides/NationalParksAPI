@@ -35,3 +35,8 @@ h3{
 input[type=number]{
     width: 50px;
 } 
+
+#search-instruction{
+  font-size: 16px;
+  color:blue;
+}
